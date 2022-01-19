@@ -53,8 +53,10 @@ public class Server {
                     /*
                     Everything else should be treated as a valid message
                     TODO: Process the line input
+                    For testing I am just going to hardcode direct pasting to the bot-testing channel
                     */
                     DebugUtils.UnknownMsg("INCOMING DATA: " + line);
+                    mainController.processLine(line);
                 }
 
             } catch(IOException i) {

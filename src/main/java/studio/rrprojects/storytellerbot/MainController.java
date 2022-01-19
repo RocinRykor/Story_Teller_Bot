@@ -2,6 +2,7 @@ package studio.rrprojects.storytellerbot;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import studio.rrprojects.storytellerbot.config.ConfigController;
 import studio.rrprojects.storytellerbot.server.Server;
 import studio.rrprojects.util_library.DebugUtils;
@@ -27,6 +28,15 @@ public class MainController {
         server = new Server(this, 5000);
     }
 
+    public void processLine(String line) {
+        //This is the input from the client
+        //In the future it will check if valid by ensuring it is a json object
+        //For now just post to botTesting
+
+        TextChannel channel = jda.getGuilds().get(0).getTextChannelsByName("bot_testing", true).get(0);
+        channel.sendMessage(line).queue();
+    }
+
     private JDA StartJDA() {
         try {
             return JDABuilder.createDefault(configController.getOption("botToken")).build();
@@ -42,4 +52,5 @@ public class MainController {
     public static void main(String[] args) {
 	    new MainController();
     }
+
 }
