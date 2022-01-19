@@ -5,6 +5,7 @@ import studio.rrprojects.util_library.DebugUtils;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,18 +41,42 @@ public class Server {
             try {
                 line = in.readUTF();
 
-                //TODO: Process the line input
-                DebugUtils.UnknownMsg("INCOMING DATA: " + line);
+                /*
+                Handshake message - Ping
+                When I receive this I want to send information about the Discord Channel back to the client
+                TODO: Gather server information, pack as JSON.
+                */
+                if (line.equalsIgnoreCase("ping")) {
+                    DebugUtils.VaraibleMsg("PING RECEIVED: RETURNING MESSAGE!");
+                    sendResponse(socket);
+                } else {
+                    /*
+                    Everything else should be treated as a valid message
+                    TODO: Process the line input
+                    */
+                    DebugUtils.UnknownMsg("INCOMING DATA: " + line);
+                }
 
             } catch(IOException i) {
                 System.out.println("Inner catch: " + i);
                 CloseConnectionAndRestart(server, socket, in);
             }
 
+
+
             //Then closes and restarts as the client side has also closed the connection
             CloseConnectionAndRestart(server, socket, in);
         } catch(IOException i) {
             System.out.println("Outer Catch: " + i);
+        }
+    }
+
+    private void sendResponse(Socket socket) {
+        try {
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            out.writeUTF("PONG!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
